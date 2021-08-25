@@ -46,7 +46,7 @@ private:
     std::vector<StationaryState> generateRoamer(u64 seed) const;
     std::vector<StationaryState> generateGift(u64 seed) const;
     std::vector<StationaryState> generateEntraLink(u64 seed) const;
-    std::vector<StationaryState> generateLarvestaEgg(u64 seed) const;
+    std::vector<StationaryState> generateGiftEgg(u64 seed) const;
     std::vector<StationaryState> generateHiddenGrotto(u64 seed) const;
 };
 

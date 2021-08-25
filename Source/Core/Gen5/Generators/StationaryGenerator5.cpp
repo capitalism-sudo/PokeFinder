@@ -72,7 +72,7 @@ std::vector<StationaryState> StationaryGenerator5::generate(u64 seed) const
         case Encounter::EntraLink:
             return generateEntraLink(seed);
         case Encounter::GiftEgg:
-            return generateLarvestaEgg(seed);
+            return generateGiftEgg(seed);
         case Encounter::HiddenGrotto:
             return generateHiddenGrotto(seed);
         default:
@@ -366,7 +366,7 @@ std::vector<StationaryState> StationaryGenerator5::generateEntraLink(u64 seed) c
     return states;
 }
 
-std::vector<StationaryState> StationaryGenerator5::generateLarvestaEgg(u64 seed) const
+std::vector<StationaryState> StationaryGenerator5::generateGiftEgg(u64 seed) const
 {
     std::vector<StationaryState> states;
 
@@ -377,8 +377,9 @@ std::vector<StationaryState> StationaryGenerator5::generateLarvestaEgg(u64 seed)
     {
         StationaryState state(initialAdvances + cnt);
         BWRNG go(rng.getSeed());
-
-        u32 pid = go.nextUInt();
+        u64 seed = go.next();
+        state.setSeed(((seed >> 32) * 0x1FFF) >> 32);
+        u32 pid = seed >> 32;
         go.advance(1);
         state.setNature(go.nextUInt(25));
 
