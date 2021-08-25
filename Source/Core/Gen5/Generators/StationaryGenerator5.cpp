@@ -330,8 +330,9 @@ std::vector<StationaryState> StationaryGenerator5::generateGift(u64 seed) const
     {
         StationaryState state(initialAdvances + cnt);
         BWRNG go(rng.getSeed());
-
-        u32 pid = go.nextUInt() ^ 0x10000;
+        u64 seed = go.next();
+        state.setSeed(((seed >> 32) * 0x1FFF) >> 32);
+        u32 pid = (seed >> 32) ^ 0x10000;
         state.setNature(go.nextUInt(25));
 
         state.setPID(pid);

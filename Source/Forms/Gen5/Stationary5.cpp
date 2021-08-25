@@ -358,9 +358,9 @@ void Stationary5::generatorMethodIndexChanged(int index)
         {
         case Method::Method5:
         {
-            ui->comboBoxGeneratorEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift Egg"), tr("Hidden Grotto") });
+            ui->comboBoxGeneratorEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift"), tr("Gift Egg"), tr("Hidden Grotto") });
             ui->comboBoxGeneratorEncounter->setup(
-                { Encounter::Stationary, Encounter::Roamer, Encounter::GiftEgg, Encounter::HiddenGrotto });
+                { Encounter::Stationary, Encounter::Roamer, Encounter::Gift, Encounter::GiftEgg, Encounter::HiddenGrotto });
 
             ui->pushButtonCalculateInitialAdvances->setVisible(true);
 
@@ -390,8 +390,8 @@ void Stationary5::generatorMethodIndexChanged(int index)
         {
         case Method::Method5:
         {
-            ui->comboBoxGeneratorEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift Egg") });
-            ui->comboBoxGeneratorEncounter->setup({ Encounter::Stationary, Encounter::Roamer, Encounter::GiftEgg });
+            ui->comboBoxGeneratorEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift"), tr("Gift Egg") });
+            ui->comboBoxGeneratorEncounter->setup({ Encounter::Stationary, Encounter::Roamer, Encounter::Gift, Encounter::GiftEgg });
 
             ui->pushButtonCalculateInitialAdvances->setVisible(true);
 
@@ -427,8 +427,9 @@ void Stationary5::searcherMethodIndexChanged(int index)
         {
         case Method::Method5:
         {
-            ui->comboBoxSearcherEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift Egg"), tr("Hidden Grotto") });
-            ui->comboBoxSearcherEncounter->setup({ Encounter::Stationary, Encounter::Roamer, Encounter::GiftEgg, Encounter::HiddenGrotto });
+            ui->comboBoxSearcherEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift"), tr("Gift Egg"), tr("Hidden Grotto") });
+            ui->comboBoxSearcherEncounter->setup(
+                { Encounter::Stationary, Encounter::Roamer, Encounter::Gift, Encounter::GiftEgg, Encounter::HiddenGrotto });
 
             ui->filterSearcher->disableControls(Controls::IVs | Controls::HiddenPowers);
             ui->filterSearcher->enableControls(Controls::Ability | Controls::Shiny | Controls::Gender | Controls::GenderRatio
@@ -454,8 +455,8 @@ void Stationary5::searcherMethodIndexChanged(int index)
         {
         case Method::Method5:
         {
-            ui->comboBoxSearcherEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift Egg") });
-            ui->comboBoxSearcherEncounter->setup({ Encounter::Stationary, Encounter::Roamer, Encounter::GiftEgg });
+            ui->comboBoxSearcherEncounter->addItems({ tr("Stationary"), tr("Roamer"), tr("Gift"), tr("Gift Egg") });
+            ui->comboBoxSearcherEncounter->setup({ Encounter::Stationary, Encounter::Roamer, Encounter::Gift, Encounter::GiftEgg });
 
             ui->filterSearcher->disableControls(Controls::IVs | Controls::HiddenPowers);
             ui->filterSearcher->enableControls(Controls::Ability | Controls::Shiny | Controls::Gender | Controls::GenderRatio
