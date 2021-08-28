@@ -22,13 +22,20 @@
 #include <Core/Util/Translator.hpp>
 #include <Core/Util/Utilities.hpp>
 
-StationaryGeneratorModel5::StationaryGeneratorModel5(QObject *parent, Method method) : TableModel<StationaryState>(parent), method(method)
+StationaryGeneratorModel5::StationaryGeneratorModel5(QObject *parent, Method method) :
+    TableModel<StationaryState>(parent), method(method), time(false)
 {
 }
 
 void StationaryGeneratorModel5::setMethod(Method method)
 {
     this->method = method;
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount());
+}
+
+void StationaryGeneratorModel5::setUseTime(bool useTime)
+{
+    time = useTime;
     emit headerDataChanged(Qt::Horizontal, 0, columnCount());
 }
 
@@ -40,7 +47,7 @@ int StationaryGeneratorModel5::columnCount(const QModelIndex &parent) const
     case Method::Method5CGear:
         return 9;
     case Method::Method5:
-        return 7;
+        return time ? 8 : 7;
     default:
         return 0;
     }
@@ -58,31 +65,33 @@ QVariant StationaryGeneratorModel5::data(const QModelIndex &index, int role) con
             return state.getAdvances();
         case 1:
         {
-            return QString::fromStdString(Utilities::getChatot64(state.getSeed()));
+            return QString::number(0);
         }
         case 2:
-            return QString::number(state.getPID(), 16).toUpper().rightJustified(8, '0');
+            return QString::fromStdString(Utilities::getChatot64(state.getSeed()));
         case 3:
+            return QString::number(state.getPID(), 16).toUpper().rightJustified(8, '0');
+        case 4:
         {
             u8 shiny = state.getShiny();
             return shiny == 2 ? tr("Square") : shiny == 1 ? tr("Star") : tr("No");
         }
-        case 4:
-            return QString::fromStdString(Translator::getNature(state.getNature()));
         case 5:
-            return state.getAbility();
+            return QString::fromStdString(Translator::getNature(state.getNature()));
         case 6:
+            return state.getAbility();
         case 7:
         case 8:
         case 9:
         case 10:
         case 11:
-            return state.getIV(static_cast<u8>(column - 6));
         case 12:
-            return QString::fromStdString(Translator::getHiddenPower(state.getHidden()));
+            return state.getIV(static_cast<u8>(column - 7));
         case 13:
-            return state.getPower();
+            return QString::fromStdString(Translator::getHiddenPower(state.getHidden()));
         case 14:
+            return state.getPower();
+        case 15:
             return QString::fromStdString(Translator::getGender(state.getGender()));
         }
     }
@@ -105,10 +114,19 @@ int StationaryGeneratorModel5::getColumn(int column) const
     switch (method)
     {
     case Method::Method5IVs:
+        return column > 0 ? column + 6 : column;
     case Method::Method5CGear:
-        return column > 0 ? column + 5 : column;
+        return column > 0 ? column + 6 : column;
     case Method::Method5:
-        return column > 5 ? column + 8 : column;
+        if (time)
+        {
+            return column > 6 ? column + 8 : column;
+        }
+        else
+        {
+            return column > 0 ? (column + 1 > 6 ? column + 9 : column + 1) : column;
+        }
+
     default:
         return column;
     }
@@ -248,8 +266,9 @@ int StationarySearcherModel5::columnCount(const QModelIndex &parent) const
     switch (method)
     {
     case Method::Method5IVs:
-    case Method::Method5CGear:
         return 13;
+    case Method::Method5CGear:
+        return 10;
     case Method::Method5:
         return 11;
     default:
@@ -267,7 +286,8 @@ QVariant StationarySearcherModel5::data(const QModelIndex &index, int role) cons
         switch (column)
         {
         case 0:
-            return QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(16, '0');
+            return method == Method::Method5CGear ? QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(8, '0')
+                                                  : QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(16, '0');
         case 1:
             return state.getAdvances();
         case 2:

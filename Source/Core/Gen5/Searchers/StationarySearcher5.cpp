@@ -25,8 +25,8 @@
 #include <Core/Util/Utilities.hpp>
 #include <future>
 
-StationarySearcher5::StationarySearcher5(const Profile5 &profile, Method method) :
-    profile(profile), method(method), searching(false), progress(0)
+StationarySearcher5::StationarySearcher5(const Profile5 &profile, u32 minDelay, u32 maxDelay, Method method) :
+    profile(profile), minDelay(minDelay), maxDelay(maxDelay), method(method), searching(false), progress(0)
 {
 }
 
@@ -93,64 +93,118 @@ void StationarySearcher5::search(StationaryGenerator5 generator, const Date &sta
     auto buttons = Keypresses::getKeyPresses(profile.getKeypresses(), profile.getSkipLR());
     auto values = Keypresses::getValues(buttons);
 
-    for (u16 timer0 = profile.getTimer0Min(); timer0 <= profile.getTimer0Max(); timer0++)
+    if (method != Method::Method5CGear)
     {
-        sha.setTimer0(timer0, profile.getVCount());
-
-        for (Date date = start; date <= end; date = date.addDays(1))
+        for (u16 timer0 = profile.getTimer0Min(); timer0 <= profile.getTimer0Max(); timer0++)
         {
-            sha.setDate(date);
-            sha.precompute();
+            sha.setTimer0(timer0, profile.getVCount());
 
-            for (size_t i = 0; i < values.size(); i++)
+            for (Date date = start; date <= end; date = date.addDays(1))
             {
-                sha.setButton(values[i]);
+                sha.setDate(date);
+                sha.precompute();
 
-                for (u8 hour = 0; hour < 24; hour++)
+                for (size_t i = 0; i < values.size(); i++)
                 {
-                    for (u8 minute = 0; minute < 60; minute++)
+                    sha.setButton(values[i]);
+
+                    for (u8 hour = 0; hour < 24; hour++)
                     {
-                        for (u8 second = 0; second < 60; second++)
+                        for (u8 minute = 0; minute < 60; minute++)
                         {
-                            if (!searching)
+                            for (u8 second = 0; second < 60; second++)
                             {
-                                return;
-                            }
-
-                            sha.setTime(hour, minute, second, profile.getDSType());
-                            u64 seed = sha.hashSeed();
-
-                            if (method == Method::Method5)
-                            {
-                                generator.setInitialAdvances(flag ? Utilities::initialAdvancesBW(seed)
-                                                                  : Utilities::initialAdvancesBW2(seed, profile.getMemoryLink()));
-                            }
-                            else
-                            {
-                                generator.setOffset(flag ? 0 : 2);
-                            }
-
-                            auto states = generator.generate(seed);
-
-                            if (!states.empty())
-                            {
-                                std::vector<SearcherState5<StationaryState>> displayStates;
-                                displayStates.reserve(states.size());
-
-                                DateTime dt(date, Time(hour, minute, second));
-                                for (const auto &state : states)
+                                if (!searching)
                                 {
-                                    displayStates.emplace_back(dt, seed, buttons[i], timer0, state);
+                                    return;
                                 }
 
-                                std::lock_guard<std::mutex> lock(mutex);
-                                results.insert(results.end(), displayStates.begin(), displayStates.end());
+                                sha.setTime(hour, minute, second, profile.getDSType());
+                                u64 seed = sha.hashSeed();
+
+                                if (method == Method::Method5)
+                                {
+                                    generator.setInitialAdvances(flag ? Utilities::initialAdvancesBW(seed)
+                                                                      : Utilities::initialAdvancesBW2(seed, profile.getMemoryLink()));
+                                }
+                                else
+                                {
+                                    generator.setOffset(flag ? 0 : 2);
+                                }
+
+                                auto states = generator.generate(seed);
+
+                                if (!states.empty())
+                                {
+                                    std::vector<SearcherState5<StationaryState>> displayStates;
+                                    displayStates.reserve(states.size());
+
+                                    DateTime dt(date, Time(hour, minute, second));
+                                    for (const auto &state : states)
+                                    {
+                                        displayStates.emplace_back(dt, seed, buttons[i], timer0, state);
+                                    }
+
+                                    std::lock_guard<std::mutex> lock(mutex);
+                                    results.insert(results.end(), displayStates.begin(), displayStates.end());
+                                }
                             }
                         }
                     }
-                }
 
-                progress++;
+                    progress++;
+                }
+            }
+        }
+    }
+    else
+    {
+        // Will be needed for fast search
+        // std::array<bool, 6> included;
+        // for (u8 i = 0; i < 6; i++)
+        // {
+        //    if (i + 20 >= initialAdvances - 1 && i + 20 < initialAdvances + maxAdvances - 1)
+        //    {
+        //        included[i] = true;
+        //    }
+        //    else
+        //    {
+        //        included[i] = false;
+        //    }
+        // }
+
+        for (u32 ab = 1; ab <= 255; ab++)
+        {
+            for (u32 cd = 0; cd <= 23; cd++)
+            {
+                for (u32 delay = (start.year() - 2000) + minDelay; delay <= (start.year() - 2000) + maxDelay; delay++)
+                {
+                    if (!searching)
+                    {
+                        return;
+                    }
+
+                    u64 seed = (ab << 24) + (cd << 16) + delay;
+                    seed = (seed + (profile.getMac() & 0xFFFFFF));
+
+                    auto states = generator.generate(seed);
+
+                    if (!states.empty())
+                    {
+                        std::vector<SearcherState5<StationaryState>> displayStates;
+                        displayStates.reserve(states.size());
+
+                        for (const auto &state : states)
+                        {
+                            displayStates.emplace_back(DateTime(), seed, 0, 0, state);
+                        }
+
+                        std::lock_guard<std::mutex> lock(mutex);
+                        results.insert(results.end(), displayStates.begin(), displayStates.end());
+                    }
+
+                    progress++;
+                }
             }
         }
     }

@@ -32,15 +32,17 @@ class StationaryGeneratorModel5 : public TableModel<StationaryState>
 public:
     explicit StationaryGeneratorModel5(QObject *parent, Method method);
     void setMethod(Method method);
+    void setUseTime(bool useTime);
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
 
 private:
     Method method;
-    QStringList header = { tr("Advances"), tr("Chatot"), tr("PID"), tr("Shiny"), tr("Nature"), tr("Ability"), tr("HP"),    tr("Atk"),
-                           tr("Def"),      tr("SpA"),    tr("SpD"), tr("Spe"),   tr("Hidden"), tr("Power"),   tr("Gender") };
+    QStringList header = { tr("Advances"), tr("Time"), tr("Chatot"), tr("PID"), tr("Shiny"), tr("Nature"), tr("Ability"), tr("HP"),
+                           tr("Atk"),      tr("Def"),  tr("SpA"),    tr("SpD"), tr("Spe"),   tr("Hidden"), tr("Power"),   tr("Gender") };
 
+    bool time;
     int getColumn(int column) const;
 };
 

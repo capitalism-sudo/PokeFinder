@@ -187,7 +187,7 @@ std::vector<StationaryState> StationaryGenerator5::generateCGear(u64 seed) const
 {
     std::vector<StationaryState> states;
 
-    MT mt(seed >> 32);
+    MT mt(seed >> 32 == 0 ? seed : seed >> 32);
     mt.advance(initialAdvances + offset);
     mt.advance(2); // Skip first two advances
 
@@ -361,9 +361,33 @@ std::vector<StationaryState> StationaryGenerator5::generateEntraLink(u64 seed) c
         StationaryState state(initialAdvances + cnt);
         BWRNG go(rng.getSeed());
 
-        // TODO
-    }
+        state.setSeed(go.nextUInt(0x1FFF));
+        u32 pid = go.nextUInt();
+        if (genderRatio == 255)
+        {
+            go.advance(3);
+            state.setNature(go.nextUInt(25));
+        }
+        else
+        {
+            pid = Utilities::forceGender(pid, go.nextUInt(), gender, genderRatio);
+            go.advance(3);
+            state.setNature(go.nextUInt(25));
+        }
 
+        if ((pid & 0x10000) == 0x10000)
+        {
+            pid = pid ^ 0x10000;
+        }
+
+        state.setPID(pid);
+        state.setAbility((pid >> 16) & 1);
+        state.setGender(pid & 255, genderRatio);
+        if (filter.comparePID(state))
+        {
+            states.emplace_back(state);
+        }
+    }
     return states;
 }
 
