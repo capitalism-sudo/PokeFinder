@@ -189,7 +189,7 @@ std::vector<StationaryState5> StationaryGenerator5::generateCGear(u64 seed) cons
     std::vector<StationaryState5> states;
 
     MT mt(seed >> 32 == 0 ? seed : seed >> 32);
-    mt.advance(initialAdvances + offset + 6);
+    mt.advance(initialAdvances + offset + 5); // Advance 5 to compensate for the game's advances after last dialogue
     mt.advance(2); // Skip first two advances
 
     RNGList<u8, MT, 8, 27> rngList(mt);
