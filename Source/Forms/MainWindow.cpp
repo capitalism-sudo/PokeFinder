@@ -47,6 +47,7 @@
 #include <Forms/Gen5/Profile/ProfileCalibrator5.hpp>
 #include <Forms/Gen5/Profile/ProfileManager5.hpp>
 #include <Forms/Gen5/Stationary5.hpp>
+#include <Forms/Gen5/Tools/EntraLinkSeedSearcher.hpp>
 #include <Forms/Util/EncounterLookup.hpp>
 #include <Forms/Util/IVCalculator.hpp>
 #include <Forms/Util/IVtoPID.hpp>
@@ -138,6 +139,7 @@ void MainWindow::setupModels()
     connect(ui->pushButtonIDs5, &QPushButton::clicked, this, &MainWindow::openIDs5);
     connect(ui->actionProfileCalibrator, &QAction::triggered, this, &MainWindow::openProfileCalibrator);
     connect(ui->actionProfileManager5, &QAction::triggered, this, &MainWindow::openProfileManager5);
+    connect(ui->actionEntraLinkSeedSearcher, &QAction::triggered, this, &MainWindow::openEntraLinkSeedSearcher);
 
     connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::openAbout);
     connect(ui->actionEncounterLookup, &QAction::triggered, this, &MainWindow::openEncounterLookup);
@@ -550,6 +552,14 @@ void MainWindow::openProfileManager5()
     auto *manager = new ProfileManager5();
     connect(manager, &ProfileManager5::updateProfiles, this, [=] { updateProfiles(5); });
     manager->show();
+}
+
+void MainWindow::openEntraLinkSeedSearcher()
+{
+    auto *entraLinkSearcher = new EntraLinkSeedSearcher();
+    connect(entraLinkSearcher, &EntraLinkSeedSearcher::alertProfiles, this, &MainWindow::updateProfiles);
+    entraLinkSearcher->show();
+    entraLinkSearcher->raise();
 }
 
 void MainWindow::openAbout()

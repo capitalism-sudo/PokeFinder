@@ -104,6 +104,7 @@ private slots:
     void openIDs5();
     void openProfileCalibrator();
     void openProfileManager5();
+    void openEntraLinkSeedSearcher();
     void openAbout();
     void openEncounterLookup();
     void openIVCalculator();
