@@ -21,12 +21,12 @@
 #define STATIONARYMODEL5_HPP
 
 #include <Core/Gen5/States/SearcherState5.hpp>
-#include <Core/Parents/States/StationaryState.hpp>
+#include <Core/Gen5/States/StationaryState5.hpp>
 #include <Forms/Models/TableModel.hpp>
 
 enum Method : u8;
 
-class StationaryGeneratorModel5 : public TableModel<StationaryState>
+class StationaryGeneratorModel5 : public TableModel<StationaryState5>
 {
     Q_OBJECT
 public:
@@ -46,7 +46,7 @@ private:
     int getColumn(int column) const;
 };
 
-class StationarySearcherModel5 : public TableModel<SearcherState5<StationaryState>>
+class StationarySearcherModel5 : public TableModel<SearcherState5<StationaryState5>>
 {
     Q_OBJECT
 public:

@@ -23,7 +23,7 @@
 #include <Core/Util/Utilities.hpp>
 
 StationaryGeneratorModel5::StationaryGeneratorModel5(QObject *parent, Method method) :
-    TableModel<StationaryState>(parent), method(method), time(false)
+    TableModel<StationaryState5>(parent), method(method), time(false)
 {
 }
 
@@ -65,6 +65,18 @@ QVariant StationaryGeneratorModel5::data(const QModelIndex &index, int role) con
             return state.getAdvances();
         case 1:
         {
+            if (state.getCGearTime() == 0)
+            {
+                return tr("Skip");
+            }
+            else
+            {
+                u32 minutes = state.getCGearTime() / 3600;
+                u32 seconds = (state.getCGearTime() - (3600 * minutes)) / 60;
+                u32 milli = ((state.getCGearTime() % 60) * 100) / 60;
+                return QString::number(minutes) + tr(":") + QString::number(seconds).rightJustified(2, '0') + tr(".")
+                    + QString::number(milli).rightJustified(2, '0');
+            }
             return QString::number(0);
         }
         case 2:
@@ -133,7 +145,7 @@ int StationaryGeneratorModel5::getColumn(int column) const
 }
 
 StationarySearcherModel5::StationarySearcherModel5(QObject *parent, Method method) :
-    TableModel<SearcherState5<StationaryState>>(parent), method(method)
+    TableModel<SearcherState5<StationaryState5>>(parent), method(method)
 {
 }
 
@@ -153,14 +165,14 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
         {
         case 0:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2) {
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2) {
                           return flag ? state1.getInitialSeed() < state2.getInitialSeed()
                                       : state1.getInitialSeed() > state2.getInitialSeed();
                       });
             break;
         case 1:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getAdvances() < state2.getState().getAdvances()
                                       : state1.getState().getAdvances() > state2.getState().getAdvances();
@@ -168,21 +180,21 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 2:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2) {
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2) {
                           return flag ? state1.getState().getLead() < state2.getState().getLead()
                                       : state1.getState().getLead() > state2.getState().getLead();
                       });
             break;
         case 3:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2) {
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2) {
                           return flag ? state1.getState().getPID() < state2.getState().getPID()
                                       : state1.getState().getPID() > state2.getState().getPID();
                       });
             break;
         case 4:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getShiny() < state2.getState().getShiny()
                                       : state1.getState().getShiny() > state2.getState().getShiny();
@@ -190,7 +202,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 5:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getNature() < state2.getState().getNature()
                                       : state1.getState().getNature() > state2.getState().getNature();
@@ -198,7 +210,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 6:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getAbility() < state2.getState().getAbility()
                                       : state1.getState().getAbility() > state2.getState().getAbility();
@@ -211,7 +223,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
         case 11:
         case 12:
             std::sort(model.begin(), model.end(),
-                      [flag, column](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag, column](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag
                               ? state1.getState().getIV(static_cast<u8>(column - 7)) < state2.getState().getIV(static_cast<u8>(column - 7))
@@ -220,7 +232,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 13:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getHidden() < state2.getState().getHidden()
                                       : state1.getState().getHidden() > state2.getState().getHidden();
@@ -228,7 +240,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 14:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getPower() < state2.getState().getPower()
                                       : state1.getState().getPower() > state2.getState().getPower();
@@ -236,7 +248,7 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 15:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       {
                           return flag ? state1.getState().getGender() < state2.getState().getGender()
                                       : state1.getState().getGender() > state2.getState().getGender();
@@ -244,17 +256,17 @@ void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
             break;
         case 16:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       { return flag ? state1.getDateTime() < state2.getDateTime() : state1.getDateTime() > state2.getDateTime(); });
             break;
         case 17:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       { return flag ? state1.getTimer0() < state2.getTimer0() : state1.getTimer0() > state2.getTimer0(); });
             break;
         case 18:
             std::sort(model.begin(), model.end(),
-                      [flag](const SearcherState5<StationaryState> &state1, const SearcherState5<StationaryState> &state2)
+                      [flag](const SearcherState5<StationaryState5> &state1, const SearcherState5<StationaryState5> &state2)
                       { return flag ? state1.getButtons() < state2.getButtons() : state1.getButtons() > state2.getButtons(); });
             break;
         }

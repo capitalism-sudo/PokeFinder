@@ -35,7 +35,7 @@ public:
     explicit StationarySearcher5(const Profile5 &profile, u32 minDelay, u32 maxDelay, Method method);
     void startSearch(const StationaryGenerator5 &generator, int threads, Date start, const Date &end);
     void cancelSearch();
-    std::vector<SearcherState5<StationaryState>> getResults();
+    std::vector<SearcherState5<StationaryState5>> getResults();
     int getProgress() const;
 
 private:
@@ -46,7 +46,7 @@ private:
     Method method;
     bool searching;
     std::atomic<int> progress;
-    std::vector<SearcherState5<StationaryState>> results;
+    std::vector<SearcherState5<StationaryState5>> results;
     std::mutex mutex;
 
     void search(StationaryGenerator5 generator, const Date &start, const Date &end);

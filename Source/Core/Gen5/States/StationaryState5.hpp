@@ -32,9 +32,19 @@ public:
     {
     }
 
+    u32 getCGearTime() const
+    {
+        return cGearTime;
+    }
+
     u32 getIVState() const
     {
         return ivState;
+    }
+
+    void setCGearTime(u32 cGearTime)
+    {
+        this->cGearTime = cGearTime;
     }
 
     void setIVState(u32 ivState)
@@ -43,6 +53,7 @@ public:
     }
 
 private:
+    u32 cGearTime;
     u32 ivState;
 };
 

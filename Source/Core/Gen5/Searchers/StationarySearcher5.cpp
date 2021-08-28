@@ -73,7 +73,7 @@ void StationarySearcher5::cancelSearch()
     searching = false;
 }
 
-std::vector<SearcherState5<StationaryState>> StationarySearcher5::getResults()
+std::vector<SearcherState5<StationaryState5>> StationarySearcher5::getResults()
 {
     std::lock_guard<std::mutex> lock(mutex);
     auto data = std::move(results);
@@ -136,7 +136,7 @@ void StationarySearcher5::search(StationaryGenerator5 generator, const Date &sta
 
                                 if (!states.empty())
                                 {
-                                    std::vector<SearcherState5<StationaryState>> displayStates;
+                                    std::vector<SearcherState5<StationaryState5>> displayStates;
                                     displayStates.reserve(states.size());
 
                                     DateTime dt(date, Time(hour, minute, second));
@@ -191,7 +191,7 @@ void StationarySearcher5::search(StationaryGenerator5 generator, const Date &sta
 
                     if (!states.empty())
                     {
-                        std::vector<SearcherState5<StationaryState>> displayStates;
+                        std::vector<SearcherState5<StationaryState5>> displayStates;
                         displayStates.reserve(states.size());
 
                         for (const auto &state : states)

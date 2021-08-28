@@ -20,8 +20,8 @@
 #ifndef GENERATOR5_HPP
 #define GENERATOR5_HPP
 
+#include <Core/Gen5/States/StationaryState5.hpp>
 #include <Core/Parents/Generators/StationaryGenerator.hpp>
-#include <Core/Parents/States/StationaryState.hpp>
 
 enum Encounter : u8;
 
@@ -31,23 +31,23 @@ public:
     StationaryGenerator5() = default;
     StationaryGenerator5(u32 initialAdvances, u32 maxAdvances, u16 tid, u16 sid, u8 gender, u8 genderRatio, Method method,
                          Encounter encounter, const StateFilter &filter);
-    std::vector<StationaryState> generate(u64 seed) const;
+    std::vector<StationaryState5> generate(u64 seed) const;
 
 private:
     u8 idBit;
     Encounter encounter;
     u8 gender;
 
-    std::vector<StationaryState> generateRoamerIVs(u64 seed) const;
-    std::vector<StationaryState> generateIVs(u64 seed) const;
-    std::vector<StationaryState> generateRoamerCGear(u64 seed) const;
-    std::vector<StationaryState> generateCGear(u64 seed) const;
-    std::vector<StationaryState> generateStationary(u64 seed) const;
-    std::vector<StationaryState> generateRoamer(u64 seed) const;
-    std::vector<StationaryState> generateGift(u64 seed) const;
-    std::vector<StationaryState> generateEntraLink(u64 seed) const;
-    std::vector<StationaryState> generateGiftEgg(u64 seed) const;
-    std::vector<StationaryState> generateHiddenGrotto(u64 seed) const;
+    std::vector<StationaryState5> generateRoamerIVs(u64 seed) const;
+    std::vector<StationaryState5> generateIVs(u64 seed) const;
+    std::vector<StationaryState5> generateRoamerCGear(u64 seed) const;
+    std::vector<StationaryState5> generateCGear(u64 seed) const;
+    std::vector<StationaryState5> generateStationary(u64 seed) const;
+    std::vector<StationaryState5> generateRoamer(u64 seed) const;
+    std::vector<StationaryState5> generateGift(u64 seed) const;
+    std::vector<StationaryState5> generateEntraLink(u64 seed) const;
+    std::vector<StationaryState5> generateGiftEgg(u64 seed) const;
+    std::vector<StationaryState5> generateHiddenGrotto(u64 seed) const;
 };
 
 #endif // GENERATOR5_HPP

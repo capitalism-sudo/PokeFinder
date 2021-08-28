@@ -56,6 +56,7 @@ add_library(PokeFinderCore STATIC
     Gen4/Searchers/WildSearcher4.cpp
     Gen4/SeedTime.cpp
     Gen4/Tools/ChainedSIDCalc.cpp
+    Gen5/CGearTimer.cpp
     Gen5/EncounterArea5.cpp
     Gen5/Encounters5.cpp
     Gen5/Filters/HiddenGrottoFilter.cpp
