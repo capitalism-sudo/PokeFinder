@@ -93,7 +93,7 @@ void StationarySearcher5::search(StationaryGenerator5 generator, const Date &sta
     auto buttons = Keypresses::getKeyPresses(profile.getKeypresses(), profile.getSkipLR());
     auto values = Keypresses::getValues(buttons);
 
-    if (method != Method::Method5CGear)
+    if (method != Method::Method5CGear || profile.getVersion() == Game::Black2 || profile.getVersion() == Game::White2)
     {
         for (u16 timer0 = profile.getTimer0Min(); timer0 <= profile.getTimer0Max(); timer0++)
         {

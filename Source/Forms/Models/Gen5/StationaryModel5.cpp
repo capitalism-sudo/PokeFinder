@@ -155,6 +155,12 @@ void StationarySearcherModel5::setMethod(Method method)
     emit headerDataChanged(Qt::Horizontal, 0, columnCount());
 }
 
+void StationarySearcherModel5::setVersion(Game game)
+{
+    this->game = game;
+    emit headerDataChanged(Qt::Horizontal, 0, columnCount());
+}
+
 void StationarySearcherModel5::sort(int column, Qt::SortOrder order)
 {
     if (!model.empty())
@@ -280,7 +286,7 @@ int StationarySearcherModel5::columnCount(const QModelIndex &parent) const
     case Method::Method5IVs:
         return 13;
     case Method::Method5CGear:
-        return 10;
+        return (game == Game::Black || game == Game::White) ? 10 : 13;
     case Method::Method5:
         return 11;
     default:
@@ -298,8 +304,10 @@ QVariant StationarySearcherModel5::data(const QModelIndex &index, int role) cons
         switch (column)
         {
         case 0:
-            return method == Method::Method5CGear ? QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(8, '0')
-                                                  : QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(16, '0');
+            return method == Method::Method5CGear
+                ? (display.getInitialSeed() >> 32 == 0 ? QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(8, '0')
+                                                       : QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(16, '0'))
+                : QString::number(display.getInitialSeed(), 16).toUpper().rightJustified(16, '0');
         case 1:
             return state.getAdvances();
         case 2:

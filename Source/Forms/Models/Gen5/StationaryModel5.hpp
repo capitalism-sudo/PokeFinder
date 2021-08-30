@@ -20,6 +20,7 @@
 #ifndef STATIONARYMODEL5_HPP
 #define STATIONARYMODEL5_HPP
 
+#include <Core/Enum/Game.hpp>
 #include <Core/Gen5/States/SearcherState5.hpp>
 #include <Core/Gen5/States/StationaryState5.hpp>
 #include <Forms/Models/TableModel.hpp>
@@ -52,6 +53,7 @@ class StationarySearcherModel5 : public TableModel<SearcherState5<StationaryStat
 public:
     explicit StationarySearcherModel5(QObject *parent, Method method);
     void setMethod(Method method);
+    void setVersion(Game game);
     void sort(int column, Qt::SortOrder order) override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
@@ -59,6 +61,7 @@ public:
 
 private:
     Method method;
+    Game game;
     QStringList header = { tr("Seed"),  tr("Advances"), tr("Lead"),      tr("PID"),    tr("Shiny"),  tr("Nature"), tr("Ability"),
                            tr("HP"),    tr("Atk"),      tr("Def"),       tr("SpA"),    tr("SpD"),    tr("Spe"),    tr("Hidden"),
                            tr("Power"), tr("Gender"),   tr("Date/Time"), tr("Timer0"), tr("Buttons") };

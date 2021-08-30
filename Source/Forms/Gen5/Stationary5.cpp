@@ -181,7 +181,7 @@ void Stationary5::generate()
 
     generatorModel->setUseTime(false);
 
-    if (method == Method::Method5IVs)
+    if (method == Method::Method5IVs || method == Method::Method5CGear)
     {
         generator.setOffset(offset + (currentProfile.getVersion() == Game::Black || currentProfile.getVersion() == Game::White ? 0 : 2));
     }
@@ -217,6 +217,7 @@ void Stationary5::search()
     searcherModel->clearModel();
     auto method = static_cast<Method>(ui->comboBoxSearcherMethod->getCurrentInt());
     searcherModel->setMethod(method);
+    searcherModel->setVersion(currentProfile.getVersion());
 
     ui->pushButtonSearch->setEnabled(false);
     ui->pushButtonCancel->setEnabled(true);
@@ -239,7 +240,7 @@ void Stationary5::search()
     if (method == Method::Method5IVs || method == Method::Method5CGear)
     {
         generator.setInitialAdvances(ui->textBoxSearcherMinAdvances->getUInt());
-        generator.setOffset(0);
+        generator.setOffset(currentProfile.getVersion() == Game::Black || currentProfile.getVersion() == Game::White ? 0 : 2);
     }
 
     auto *searcher = new StationarySearcher5(currentProfile, minDelay, maxDelay, method);
