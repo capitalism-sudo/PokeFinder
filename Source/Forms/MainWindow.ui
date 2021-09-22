@@ -223,7 +223,6 @@
     </property>
     <addaction name="actionProfileCalibrator"/>
     <addaction name="actionProfileManager5"/>
-    <addaction name="actionEntraLinkSeedSearcher"/>
    </widget>
    <addaction name="menuGen3Tools"/>
    <addaction name="menuGen4Tools"/>
@@ -328,11 +327,6 @@
   <action name="actionAbout">
    <property name="text">
     <string>About</string>
-   </property>
-  </action>
-  <action name="actionEntraLinkSeedSearcher">
-   <property name="text">
-    <string>EntraLink Seed Searcher</string>
    </property>
   </action>
  </widget>
